@@ -114,8 +114,6 @@
   .budget-table td{background:#f8fbfd;padding:10px;border-top:1px solid #e2edf5;border-bottom:1px solid #e2edf5;}
   .budget-table td:first-child{border-left:1px solid #e2edf5;border-radius:14px 0 0 14px;font-weight:bold;}
   .budget-table td:last-child{border-right:1px solid #e2edf5;border-radius:0 14px 14px 0;}
-  .provided-cost{font-weight:bold;color:#0f6b47;background:#eefaf4;border:1px solid #bfe8d2;border-radius:999px;padding:6px 10px;display:inline-block;}
-  .entry-note{font-size:.82rem;color:#52677b;margin-top:5px;}
   input[type="number"], textarea{
     width:100%;
     padding:10px;
@@ -181,7 +179,7 @@
   <section class="hero">
     <span class="tagline">SOC-210 Interactive Stratification Activity</span>
     <h1>The Social Class Mirage</h1>
-    <p><strong>Can you afford the life you think you want?</strong> In this activity, you will be randomly assigned a social class position and occupation. Then you will meet a randomly assigned person who has just started a job. Their salary and average monthly deductions/costs will appear. Your job is to enter those costs one by one and see how quickly income changes once taxes, benefits, family needs, housing, transportation, health care, and emergencies enter the picture.</p>
+    <p><strong>Can you afford the life you think you want?</strong> In this activity, you will be randomly assigned a social class position and occupation. Then you will calculate how quickly income changes once taxes, benefits, family needs, housing, transportation, health care, and emergencies enter the picture.</p>
     <div class="class-ribbon" aria-label="visual representation of six class levels">
       <div class="person"><span class="icon">🏛️</span><strong>Wealth Elite</strong><small>Assets create income</small></div>
       <div class="person"><span class="icon">💼</span><strong>Working Wealthy</strong><small>High income, high costs</small></div>
@@ -205,7 +203,7 @@
     <h2>How to Play</h2>
     <div class="steps">
       <div class="step"><h3>1. Get Assigned</h3><p>Click the button to receive a random social class level, occupation, and estimated yearly income.</p></div>
-      <div class="step"><h3>2. Calculate Reality</h3><p>Use the monthly costs provided for your assigned person. Type each amount into the matching box so you experience the deductions step by step.</p></div>
+      <div class="step"><h3>2. Calculate Reality</h3><p>Enter monthly expenses. Use realistic estimates or numbers provided by your instructor.</p></div>
       <div class="step"><h3>3. Face Life</h3><p>Generate a life-changing emergency or opportunity and see how it changes your financial security.</p></div>
     </div>
   </section>
@@ -221,17 +219,17 @@
 
   <section class="card">
     <h2>Step 2: Monthly Reality Calculator</h2>
-    <p class="small">After you receive your person, each cost category will show a monthly amount. Type the shown amount into the box beside it. This makes the activity feel more personal while still using instructor-provided estimates.</p>
+    <p class="small">The income number will auto-fill after assignment. You may edit it if your instructor provides a different amount.</p>
     <div class="grid">
       <label><strong>Yearly Gross Income</strong><input id="yearlyIncome" type="number" placeholder="Example: 65000" oninput="calculateBudget()"></label>
       <label><strong>Monthly Gross Income</strong><input id="monthlyIncome" type="number" placeholder="Auto-calculates" oninput="calculateBudget()"></label>
     </div>
     <table class="budget-table">
-      <thead><tr><th>Monthly Cost Category</th><th>Your person's monthly cost</th><th>Enter Amount</th><th>What this includes</th></tr></thead>
+      <thead><tr><th>Monthly Cost Category</th><th>Enter Amount</th><th>What this includes</th></tr></thead>
       <tbody id="budgetRows"></tbody>
     </table>
     <button onclick="calculateBudget()">Calculate Reality</button>
-    <button class="goldbtn" onclick="checkEntries()">Check My Entries</button>
+    <button class="goldbtn" onclick="fillSampleCosts()">Fill Sample Costs</button>
     <div class="results">
       <div class="result-box"><span>Monthly Gross</span><strong id="rGross">$0</strong></div>
       <div class="result-box"><span>Total Monthly Costs</span><strong id="rCosts">$0</strong></div>
@@ -278,24 +276,24 @@
     <h2>Save or Print</h2>
     <p>When finished, use the button below to print or save this page as a PDF.</p>
     <button onclick="window.print()">Print / Save as PDF</button>
-    <p class="footer-note">Prototype note: Income and cost numbers are editable classroom placeholders. In the final version, these can be replaced with source-based averages by occupation, household type, and location.</p>
+    <p class="footer-note">Prototype note: Income and cost numbers are editable placeholders for classroom use. Before final publishing, replace sample values with your preferred source-based estimates.</p>
   </section>
 </div>
 
 <script>
 const people = [
-  {level:'Wealth Elite', icon:'🏛️', name:'Vivian', job:'Major investor / inherited wealth scenario', income:650000, family:'Married, 2 children, owns multiple properties', note:'Vivian does not depend only on wages. Assets, inheritance, property, and investments help create income and reduce vulnerability.', costs:[95000,3000,4500,23000,1200,1800,2500,6000,5000,16000]},
-  {level:'Wealth Elite', icon:'🏛️', name:'Alexander', job:'Large business owner', income:520000, family:'Married, 1 child, owns business and property', note:'Alexander has high costs, but also has ownership, business deductions, professional networks, and assets that can protect him from some financial shocks.', costs:[76000,3000,4200,18000,1000,1500,2200,5000,4200,12000]},
-  {level:'Working Wealthy', icon:'💼', name:'Dr. Priya Patel', job:'Physician', income:245000, family:'Married, 2 children, high student loan and housing costs', note:'Priya earns a high salary, but still depends on work income. Taxes, benefits, loans, housing, childcare, and lifestyle expectations reduce the monthly cushion.', costs:[4800,1700,2100,7600,520,700,850,1300,1500,3200]},
-  {level:'Working Wealthy', icon:'💼', name:'Marcus', job:'Attorney', income:176000, family:'Single parent, 1 child, professional debt', note:'Marcus appears wealthy from the outside, but debt, childcare, housing, professional expectations, and insurance can make the salary feel smaller than expected.', costs:[3400,1350,1600,5200,420,580,650,850,1100,2200]},
-  {level:'Middle Class', icon:'🏡', name:'Ms. Elena Rivera', job:'Teacher', income:62000, family:'Married, 1 child', note:'Elena has stable employment, but housing, insurance, transportation, and family expenses can leave a limited cushion.', costs:[700,395,520,2300,280,330,275,220,350,725]},
-  {level:'Middle Class', icon:'🏡', name:'Dana', job:'Retail Store Manager', income:58000, family:'Single, no children', note:'Dana has a management title, but monthly costs still add up quickly, especially housing, transportation, and benefits.', costs:[650,370,500,1750,250,310,250,180,340,700]},
-  {level:'Lower Middle Class', icon:'🧾', name:'Teresa', job:'Administrative Assistant', income:46000, family:'Married, 1 child', note:'Teresa works full time, but there is little room for emergencies after deductions, rent, utilities, family needs, and transportation.', costs:[400,293,390,1850,240,290,225,120,220,520]},
-  {level:'Lower Middle Class', icon:'🧾', name:'Caleb', job:'Gas Station Attendant', income:33500, family:'Single, no children', note:'Caleb works full time, but full-time work does not always cover basic monthly costs comfortably.', costs:[230,214,180,1250,210,240,150,70,150,420]},
-  {level:'Working Class', icon:'🔧', name:'Ricky', job:'Mechanic', income:52000, family:'Married, 2 children', note:'Ricky has essential skills, but pay depends on hours, benefits, transportation, tools, injuries, and local demand.', costs:[520,332,450,2400,270,320,260,180,260,650]},
-  {level:'Working Class', icon:'🔧', name:'Bryan', job:'Plumber', income:61000, family:'Married, 1 child', note:'Bryan earns a solid skilled-trade income, but tools, vehicle upkeep, family expenses, insurance, and unstable demand can still create pressure.', costs:[680,389,500,2200,285,330,280,220,300,780]},
-  {level:'Working Poor', icon:'🍔', name:'Jasmine', job:'Fast Food Worker', income:28000, family:'Single parent, 1 child', note:'Jasmine works hard, but low wages, limited benefits, childcare, rent, and transportation make stability difficult.', costs:[120,179,120,1500,200,230,150,50,110,300]},
-  {level:'Working Poor', icon:'🍔', name:'Noah', job:'Cashier / Part-Time Service Worker', income:24000, family:'Single, no children, unpredictable hours', note:'Noah may be working, but low wages and unpredictable hours can make even basic expenses difficult to cover.', costs:[90,153,80,1050,185,220,120,40,90,260]}
+  {level:'Wealth Elite', icon:'🏛️', job:'Inherited wealth / major investor', income:650000, note:'Assets, ownership, investments, and inherited resources may generate income beyond wages.'},
+  {level:'Wealth Elite', icon:'🏛️', job:'Large business owner', income:520000, note:'Income may come through business ownership, investments, property, and capital gains.'},
+  {level:'Working Wealthy', icon:'💼', job:'Physician', income:245000, note:'High income, but often high taxes, insurance, debt, professional costs, and lifestyle expectations.'},
+  {level:'Working Wealthy', icon:'💼', job:'Attorney', income:176000, note:'High income can create security, but income still depends heavily on continued work.'},
+  {level:'Middle Class', icon:'🏡', job:'Teacher', income:62000, note:'Stable work may still feel stretched once housing, family needs, insurance, and transportation are included.'},
+  {level:'Middle Class', icon:'🏡', job:'Retail Store Manager', income:58000, note:'Management title does not always mean financial comfort.'},
+  {level:'Lower Middle Class', icon:'🧾', job:'Gas Station Attendant', income:33500, note:'Full-time work may not provide enough income to cover rising costs without stress.'},
+  {level:'Lower Middle Class', icon:'🧾', job:'Administrative Assistant', income:46000, note:'Moderate income can disappear quickly with rent, transportation, and medical costs.'},
+  {level:'Working Class', icon:'🔧', job:'Mechanic', income:52000, note:'Skilled labor is essential, but income security can depend on hours, benefits, and local demand.'},
+  {level:'Working Class', icon:'🔧', job:'Plumber', income:61000, note:'Skilled trades can earn solid wages, but tools, transportation, injuries, and inconsistent work can matter.'},
+  {level:'Working Poor', icon:'🍔', job:'Fast Food Worker', income:28000, note:'A person can work hard and still not earn enough to meet basic living costs.'},
+  {level:'Working Poor', icon:'🍔', job:'Cashier / Part-Time Service Worker', income:24000, note:'Low wages, limited benefits, and unpredictable hours create financial vulnerability.'}
 ];
 
 const categories = [
@@ -310,6 +308,15 @@ const categories = [
   ['personal','Health, Beauty, Clothing','Shampoo, makeup, hair care, clothes, shoes, gym'],
   ['transport','Transportation and Leisure','Fuel, auto upkeep, public transit, vacations, entertainment']
 ];
+
+const sampleRates = {
+  'Wealth Elite':[95000,3000,4500,23000,1200,1800,2500,6000,5000,16000],
+  'Working Wealthy':[48000,1800,2500,9000,650,900,1000,1800,1800,4500],
+  'Middle Class':[9000,480,650,2600,300,360,300,300,450,850],
+  'Lower Middle Class':[4800,290,420,1750,240,300,250,160,250,520],
+  'Working Class':[5600,340,480,1900,260,310,280,180,280,650],
+  'Working Poor':[2300,180,180,1250,210,240,180,80,140,300]
+};
 
 const emergencies = [
   {title:'🚗 Major Car Repair', desc:'Your transmission fails and you need transportation to keep working.', monthly:0, oneTime:-4500},
@@ -336,52 +343,27 @@ function money(n){
 
 function buildRows(){
   const tbody = document.getElementById('budgetRows');
-  tbody.innerHTML = categories.map(cat => `<tr>
-    <td>${cat[1]}</td>
-    <td><span id="given_${cat[0]}" class="provided-cost">Wait for assignment</span><div class="entry-note">Type this amount in the box.</div></td>
-    <td><input type="number" id="${cat[0]}" placeholder="0" oninput="calculateBudget()"></td>
-    <td>${cat[2]}</td>
-  </tr>`).join('');
-}
-
-function showProvidedCosts(){
-  if(!currentPerson) return;
-  categories.forEach((cat,i)=>{
-    document.getElementById('given_'+cat[0]).textContent = money(currentPerson.costs[i]);
-  });
+  tbody.innerHTML = categories.map(cat => `<tr><td>${cat[1]}</td><td><input type="number" id="${cat[0]}" placeholder="0" oninput="calculateBudget()"></td><td>${cat[2]}</td></tr>`).join('');
 }
 
 function assignPerson(){
   currentPerson = people[Math.floor(Math.random()*people.length)];
   document.getElementById('yearlyIncome').value = currentPerson.income;
   document.getElementById('monthlyIncome').value = Math.round(currentPerson.income/12);
-  categories.forEach(cat=>document.getElementById(cat[0]).value='');
-  showProvidedCosts();
   document.getElementById('assignment').innerHTML = `
-    <h3>${currentPerson.icon} Meet ${currentPerson.name}: ${currentPerson.level}</h3>
-    <p><span class="pill">Occupation: ${currentPerson.job}</span> <span class="pill">Household: ${currentPerson.family}</span></p>
-    <p><span class="pill">Estimated yearly gross income: ${money(currentPerson.income)}</span></p>
-    <p class="big-money">Estimated monthly gross income before deductions: ${money(currentPerson.income/12)}</p>
+    <h3>${currentPerson.icon} ${currentPerson.level}</h3>
+    <p><span class="pill">Occupation: ${currentPerson.job}</span> <span class="pill">Estimated yearly gross income: ${money(currentPerson.income)}</span></p>
+    <p class="big-money">Estimated monthly gross income: ${money(currentPerson.income/12)}</p>
     <p>${currentPerson.note}</p>
-    <p><strong>Your task:</strong> Type each monthly cost shown in the table into the matching box. Then click Calculate Reality.</p>
   `;
-  currentEvent = {monthly:0,oneTime:0};
-  document.getElementById('emergency').innerHTML = '<p>Click the button to see what happens next.</p>';
   calculateBudget();
 }
 
-function checkEntries(){
-  if(!currentPerson){ assignPerson(); return; }
-  let correct = 0;
-  categories.forEach((cat,i)=>{
-    const entered = parseFloat(document.getElementById(cat[0]).value)||0;
-    const target = currentPerson.costs[i];
-    if(Math.round(entered) === Math.round(target)) correct++;
-  });
-  const msg = correct === categories.length
-    ? 'All entries match the assigned monthly costs. Great — now review the results and generate a life-changing event.'
-    : `${correct} out of ${categories.length} entries match. Check the monthly costs shown in the second column and try again.`;
-  document.getElementById('realityMessage').textContent = msg;
+function fillSampleCosts(){
+  if(!currentPerson){ assignPerson(); }
+  const vals = sampleRates[currentPerson.level] || sampleRates['Middle Class'];
+  categories.forEach((cat,i)=>{document.getElementById(cat[0]).value = vals[i];});
+  calculateBudget();
 }
 
 function calculateBudget(){
@@ -434,7 +416,7 @@ function resetGame(){
   document.getElementById('emergency').innerHTML = '<p>Click the button to see what happens next.</p>';
   document.getElementById('yearlyIncome').value = '';
   document.getElementById('monthlyIncome').value = '';
-  categories.forEach(cat=>{document.getElementById(cat[0]).value=''; document.getElementById('given_'+cat[0]).textContent='Wait for assignment';});
+  categories.forEach(cat=>document.getElementById(cat[0]).value='');
   calculateBudget();
 }
 
