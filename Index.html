@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Social Class Mirage Game</title>
+<style>
+  :root{
+    --navy:#17324d;
+    --gold:#f3c95f;
+    --cream:#fff9ec;
+    --mint:#dff7ef;
+    --rose:#ffe7e5;
+    --lav:#eee7ff;
+    --sky:#e6f4ff;
+    --ink:#263238;
+    --soft:#ffffff;
+    --shadow:0 10px 25px rgba(23,50,77,.13);
+    --radius:22px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    color:var(--ink);
+    background:linear-gradient(135deg,#f7fbff 0%,#fff9ec 45%,#f0fff7 100%);
+    line-height:1.55;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:22px;}
+  .hero{
+    background:linear-gradient(135deg,var(--navy),#315c83);
+    color:white;
+    border-radius:28px;
+    padding:28px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero:before{
+    content:"";
+    position:absolute;
+    inset:-80px -40px auto auto;
+    width:260px;height:260px;
+    border-radius:50%;
+    background:rgba(243,201,95,.27);
+  }
+  .hero h1{margin:0 0 8px;font-size:clamp(2rem,4vw,3.3rem);line-height:1.05;}
+  .hero p{font-size:1.1rem;max-width:850px;margin:10px 0 0;}
+  .tagline{
+    display:inline-block;
+    background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.28);
+    padding:8px 12px;border-radius:999px;font-weight:bold;margin-bottom:12px;
+  }
+  .class-ribbon{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:8px;
+    margin-top:22px;
+  }
+  .person{
+    background:rgba(255,255,255,.13);
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:16px;
+    padding:10px 8px;
+    text-align:center;
+    min-height:106px;
+  }
+  .person .icon{font-size:2rem;display:block;margin-bottom:4px;}
+  .person strong{display:block;font-size:.86rem;line-height:1.2;}
+  .card{
+    background:var(--soft);
+    border-radius:var(--radius);
+    padding:24px;
+    margin-top:20px;
+    box-shadow:var(--shadow);
+    border:1px solid rgba(23,50,77,.08);
+  }
+  .card h2,.card h3{color:var(--navy);margin-top:0;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .step{
+    border-radius:18px;
+    padding:18px;
+    background:var(--cream);
+    border:1px solid rgba(243,201,95,.5);
+  }
+  .step:nth-child(2){background:var(--mint);border-color:#b4ead9;}
+  .step:nth-child(3){background:var(--sky);border-color:#b8ddf7;}
+  button{
+    background:var(--navy);
+    color:white;
+    border:none;
+    padding:13px 18px;
+    border-radius:999px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:1rem;
+    box-shadow:0 6px 14px rgba(23,50,77,.2);
+  }
+  button:hover{filter:brightness(1.08);}
+  .secondary{background:#52677b;}
+  .goldbtn{background:#b88400;}
+  .assignment{
+    background:linear-gradient(135deg,#fff,#eef8ff);
+    border:2px solid #cfe7fa;
+    padding:20px;
+    border-radius:20px;
+    margin-top:14px;
+  }
+  .big-money{font-size:1.7rem;font-weight:bold;color:#0f6b47;}
+  .budget-table{width:100%;border-collapse:separate;border-spacing:0 10px;}
+  .budget-table th{text-align:left;color:var(--navy);font-size:.95rem;}
+  .budget-table td{background:#f8fbfd;padding:10px;border-top:1px solid #e2edf5;border-bottom:1px solid #e2edf5;}
+  .budget-table td:first-child{border-left:1px solid #e2edf5;border-radius:14px 0 0 14px;font-weight:bold;}
+  .budget-table td:last-child{border-right:1px solid #e2edf5;border-radius:0 14px 14px 0;}
+  .provided-cost{font-weight:bold;color:#0f6b47;background:#eefaf4;border:1px solid #bfe8d2;border-radius:999px;padding:6px 10px;display:inline-block;}
+  .entry-note{font-size:.82rem;color:#52677b;margin-top:5px;}
+  input[type="number"], textarea{
+    width:100%;
+    padding:10px;
+    border:1px solid #b9c8d6;
+    border-radius:12px;
+    font:inherit;
+    background:white;
+  }
+  textarea{min-height:82px;resize:vertical;}
+  .results{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-top:16px;
+  }
+  .result-box{
+    border-radius:18px;
+    padding:15px;
+    background:#f7f8ff;
+    border:1px solid #dddffc;
+  }
+  .result-box span{display:block;font-size:.84rem;color:#52677b;font-weight:bold;}
+  .result-box strong{font-size:1.25rem;color:var(--navy);}
+  .alert{
+    background:var(--rose);
+    border:1px solid #ffc8c2;
+    border-radius:18px;
+    padding:16px;
+  }
+  .fact{
+    background:#fef7dc;
+    border-left:8px solid var(--gold);
+    border-radius:16px;
+    padding:18px;
+  }
+  .emergency-card{
+    background:linear-gradient(135deg,#fff5f5,#f7fbff);
+    border:2px dashed #d37a7a;
+    border-radius:20px;
+    padding:18px;
+    margin-top:14px;
+  }
+  .pill{
+    display:inline-block;padding:5px 10px;border-radius:999px;background:#e9f2f9;color:var(--navy);font-size:.85rem;font-weight:bold;margin:3px;
+  }
+  .reflection-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .small{font-size:.9rem;color:#566;}
+  .footer-note{font-size:.88rem;color:#455a64;margin-top:14px;}
+  @media(max-width:850px){
+    .grid,.steps,.reflection-grid,.results{grid-template-columns:1fr;}
+    .class-ribbon{grid-template-columns:repeat(2,1fr);}
+  }
+  @media print{
+    body{background:white;}
+    button{display:none;}
+    .card,.hero{box-shadow:none;break-inside:avoid;}
+    .wrap{padding:0;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <span class="tagline">SOC-210 Interactive Stratification Activity</span>
+    <h1>The Social Class Mirage</h1>
+    <p><strong>Can you afford the life you think you want?</strong> In this activity, you will be randomly assigned a social class position and occupation. Then you will meet a randomly assigned person who has just started a job. Their salary and average monthly deductions/costs will appear. Your job is to enter those costs one by one and see how quickly income changes once taxes, benefits, family needs, housing, transportation, health care, and emergencies enter the picture.</p>
+    <div class="class-ribbon" aria-label="visual representation of six class levels">
+      <div class="person"><span class="icon">🏛️</span><strong>Wealth Elite</strong><small>Assets create income</small></div>
+      <div class="person"><span class="icon">💼</span><strong>Working Wealthy</strong><small>High income, high costs</small></div>
+      <div class="person"><span class="icon">🏡</span><strong>Middle Class</strong><small>Stable, but stretched</small></div>
+      <div class="person"><span class="icon">🧾</span><strong>Lower Middle</strong><small>Limited cushion</small></div>
+      <div class="person"><span class="icon">🔧</span><strong>Working Class</strong><small>Skill + uncertainty</small></div>
+      <div class="person"><span class="icon">🍔</span><strong>Working Poor</strong><small>Work, but not enough</small></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Purpose of the Game</h2>
+    <p>Most people have ideas about what it means to be “rich,” “middle class,” or “poor.” Television, social media, advertisements, and even families often create images of what life <em>should</em> look like at different class levels. Sociologists call this tension between what people say they value and what actually happens in daily life the difference between <strong>ideal culture</strong> and <strong>real culture</strong>.</p>
+    <div class="fact">
+      <h3>Important Sociology Distinction: Income Is Not Wealth</h3>
+      <p><strong>Income</strong> is money received from work, business, or investments. <strong>Wealth</strong> is what people own after subtracting what they owe. A person with a high salary can still be financially vulnerable if they have large debts, high expenses, unstable work, or little savings. A wealthy household may have assets, investments, inherited resources, and social connections that continue creating opportunities even when no one is working a traditional job.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>How to Play</h2>
+    <div class="steps">
+      <div class="step"><h3>1. Get Assigned</h3><p>Click the button to receive a random social class level, occupation, and estimated yearly income.</p></div>
+      <div class="step"><h3>2. Calculate Reality</h3><p>Use the monthly costs provided for your assigned person. Type each amount into the matching box so you experience the deductions step by step.</p></div>
+      <div class="step"><h3>3. Face Life</h3><p>Generate a life-changing emergency or opportunity and see how it changes your financial security.</p></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Step 1: Random Assignment</h2>
+    <button onclick="assignPerson()">Randomly Assign My Life</button>
+    <button class="secondary" onclick="resetGame()">Reset</button>
+    <div id="assignment" class="assignment" aria-live="polite">
+      <p>Click the button to begin.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Step 2: Monthly Reality Calculator</h2>
+    <p class="small">After you receive your person, each cost category will show a monthly amount. Type the shown amount into the box beside it. This makes the activity feel more personal while still using instructor-provided estimates.</p>
+    <div class="grid">
+      <label><strong>Yearly Gross Income</strong><input id="yearlyIncome" type="number" placeholder="Example: 65000" oninput="calculateBudget()"></label>
+      <label><strong>Monthly Gross Income</strong><input id="monthlyIncome" type="number" placeholder="Auto-calculates" oninput="calculateBudget()"></label>
+    </div>
+    <table class="budget-table">
+      <thead><tr><th>Monthly Cost Category</th><th>Your person's monthly cost</th><th>Enter Amount</th><th>What this includes</th></tr></thead>
+      <tbody id="budgetRows"></tbody>
+    </table>
+    <button onclick="calculateBudget()">Calculate Reality</button>
+    <button class="goldbtn" onclick="checkEntries()">Check My Entries</button>
+    <div class="results">
+      <div class="result-box"><span>Monthly Gross</span><strong id="rGross">$0</strong></div>
+      <div class="result-box"><span>Total Monthly Costs</span><strong id="rCosts">$0</strong></div>
+      <div class="result-box"><span>Money Remaining</span><strong id="rRemaining">$0</strong></div>
+      <div class="result-box"><span>Yearly Remaining</span><strong id="rYearlyRemaining">$0</strong></div>
+    </div>
+    <div id="realityMessage" class="footer-note"></div>
+  </section>
+
+  <section class="card">
+    <h2>Step 3: Life-Changing Emergencies & Opportunities</h2>
+    <p>Unexpected events happen across the social class system. The difference is often not whether emergencies happen, but whether people have enough savings, insurance, family support, job security, and wealth to recover from them.</p>
+    <button onclick="generateEmergency()">Generate Life Event</button>
+    <div id="emergency" class="emergency-card">
+      <p>Click the button to see what happens next.</p>
+    </div>
+    <div class="results">
+      <div class="result-box"><span>New Monthly Impact</span><strong id="eventMonthly">$0</strong></div>
+      <div class="result-box"><span>One-Time Impact</span><strong id="eventOneTime">$0</strong></div>
+      <div class="result-box"><span>Adjusted Monthly Remaining</span><strong id="adjustedMonthly">$0</strong></div>
+      <div class="result-box"><span>Adjusted Yearly Remaining</span><strong id="adjustedYearly">$0</strong></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Reflection Questions</h2>
+    <div class="reflection-grid">
+      <label><strong>1. How much money remained after expenses?</strong><textarea></textarea></label>
+      <label><strong>2. Which expense surprised you the most?</strong><textarea></textarea></label>
+      <label><strong>3. Did your assigned class match what you expected?</strong><textarea></textarea></label>
+      <label><strong>4. How did the emergency or opportunity change your situation?</strong><textarea></textarea></label>
+      <label><strong>5. How does this activity connect to social stratification?</strong><textarea></textarea></label>
+      <label><strong>6. How does this activity show the difference between ideal culture and real culture?</strong><textarea></textarea></label>
+    </div>
+  </section>
+
+  <section class="card alert">
+    <h2>Instructor’s Sociology Note</h2>
+    <p>Many Americans believe social class is determined only by individual choices, effort, or intelligence. Sociologists recognize that class position is also shaped by wealth, debt, inheritance, education, family background, social networks, health, discrimination, job opportunities, and unexpected life events.</p>
+    <p><strong>The question is not whether emergencies happen. The question is how prepared people are to absorb them when they do.</strong></p>
+  </section>
+
+  <section class="card">
+    <h2>Save or Print</h2>
+    <p>When finished, use the button below to print or save this page as a PDF.</p>
+    <button onclick="window.print()">Print / Save as PDF</button>
+    <p class="footer-note">Prototype note: Income and cost numbers are editable classroom placeholders. In the final version, these can be replaced with source-based averages by occupation, household type, and location.</p>
+  </section>
+</div>
+
+<script>
+const people = [
+  {level:'Wealth Elite', icon:'🏛️', name:'Vivian', job:'Major investor / inherited wealth scenario', income:650000, family:'Married, 2 children, owns multiple properties', note:'Vivian does not depend only on wages. Assets, inheritance, property, and investments help create income and reduce vulnerability.', costs:[95000,3000,4500,23000,1200,1800,2500,6000,5000,16000]},
+  {level:'Wealth Elite', icon:'🏛️', name:'Alexander', job:'Large business owner', income:520000, family:'Married, 1 child, owns business and property', note:'Alexander has high costs, but also has ownership, business deductions, professional networks, and assets that can protect him from some financial shocks.', costs:[76000,3000,4200,18000,1000,1500,2200,5000,4200,12000]},
+  {level:'Working Wealthy', icon:'💼', name:'Dr. Priya Patel', job:'Physician', income:245000, family:'Married, 2 children, high student loan and housing costs', note:'Priya earns a high salary, but still depends on work income. Taxes, benefits, loans, housing, childcare, and lifestyle expectations reduce the monthly cushion.', costs:[4800,1700,2100,7600,520,700,850,1300,1500,3200]},
+  {level:'Working Wealthy', icon:'💼', name:'Marcus', job:'Attorney', income:176000, family:'Single parent, 1 child, professional debt', note:'Marcus appears wealthy from the outside, but debt, childcare, housing, professional expectations, and insurance can make the salary feel smaller than expected.', costs:[3400,1350,1600,5200,420,580,650,850,1100,2200]},
+  {level:'Middle Class', icon:'🏡', name:'Ms. Elena Rivera', job:'Teacher', income:62000, family:'Married, 1 child', note:'Elena has stable employment, but housing, insurance, transportation, and family expenses can leave a limited cushion.', costs:[700,395,520,2300,280,330,275,220,350,725]},
+  {level:'Middle Class', icon:'🏡', name:'Dana', job:'Retail Store Manager', income:58000, family:'Single, no children', note:'Dana has a management title, but monthly costs still add up quickly, especially housing, transportation, and benefits.', costs:[650,370,500,1750,250,310,250,180,340,700]},
+  {level:'Lower Middle Class', icon:'🧾', name:'Teresa', job:'Administrative Assistant', income:46000, family:'Married, 1 child', note:'Teresa works full time, but there is little room for emergencies after deductions, rent, utilities, family needs, and transportation.', costs:[400,293,390,1850,240,290,225,120,220,520]},
+  {level:'Lower Middle Class', icon:'🧾', name:'Caleb', job:'Gas Station Attendant', income:33500, family:'Single, no children', note:'Caleb works full time, but full-time work does not always cover basic monthly costs comfortably.', costs:[230,214,180,1250,210,240,150,70,150,420]},
+  {level:'Working Class', icon:'🔧', name:'Ricky', job:'Mechanic', income:52000, family:'Married, 2 children', note:'Ricky has essential skills, but pay depends on hours, benefits, transportation, tools, injuries, and local demand.', costs:[520,332,450,2400,270,320,260,180,260,650]},
+  {level:'Working Class', icon:'🔧', name:'Bryan', job:'Plumber', income:61000, family:'Married, 1 child', note:'Bryan earns a solid skilled-trade income, but tools, vehicle upkeep, family expenses, insurance, and unstable demand can still create pressure.', costs:[680,389,500,2200,285,330,280,220,300,780]},
+  {level:'Working Poor', icon:'🍔', name:'Jasmine', job:'Fast Food Worker', income:28000, family:'Single parent, 1 child', note:'Jasmine works hard, but low wages, limited benefits, childcare, rent, and transportation make stability difficult.', costs:[120,179,120,1500,200,230,150,50,110,300]},
+  {level:'Working Poor', icon:'🍔', name:'Noah', job:'Cashier / Part-Time Service Worker', income:24000, family:'Single, no children, unpredictable hours', note:'Noah may be working, but low wages and unpredictable hours can make even basic expenses difficult to cover.', costs:[90,153,80,1050,185,220,120,40,90,260]}
+];
+
+const categories = [
+  ['taxes','Taxes','Federal/state taxes withheld from pay'],
+  ['fica','Social Security + Medicare','Payroll taxes that support Social Security and Medicare'],
+  ['benefits','Insurance and Benefits','Health, dental, vision, life, identity protection, flex benefits'],
+  ['housing','Housing and Family Expenses','Rent/mortgage, family size, children, childcare, child-related needs'],
+  ['electric','Power/Electric','Electricity, heating/cooling costs'],
+  ['utilities','Water, Waste, Internet, Phone','Water, trash, sewer, phone, internet'],
+  ['medical','Medical and Household Health','Doctor visits, prescriptions, hospital bills, Band-Aids, ibuprofen'],
+  ['home','Home/Pet/Household Services','Lawn care, cleaning, pet sitting, repairs, supplies'],
+  ['personal','Health, Beauty, Clothing','Shampoo, makeup, hair care, clothes, shoes, gym'],
+  ['transport','Transportation and Leisure','Fuel, auto upkeep, public transit, vacations, entertainment']
+];
+
+const emergencies = [
+  {title:'🚗 Major Car Repair', desc:'Your transmission fails and you need transportation to keep working.', monthly:0, oneTime:-4500},
+  {title:'🏥 Medical Emergency', desc:'You or a family member needs treatment not fully covered by insurance.', monthly:0, oneTime:-8000},
+  {title:'🦷 Child Needs Braces', desc:'A necessary medical expense creates a new bill.', monthly:-210, oneTime:0},
+  {title:'🏠 Home Repair', desc:'The HVAC system quits during extreme weather.', monthly:0, oneTime:-9000},
+  {title:'🐾 Pet Emergency', desc:'A beloved pet needs surgery.', monthly:0, oneTime:-3500},
+  {title:'👵 Aging Parent Needs Assistance', desc:'You begin helping with care expenses for a parent or relative.', monthly:-800, oneTime:0},
+  {title:'🍼 New Baby', desc:'Your family grows and monthly expenses increase.', monthly:-1500, oneTime:0},
+  {title:'🌪️ Natural Disaster', desc:'Storm damage creates expenses not fully covered by insurance.', monthly:0, oneTime:-15000},
+  {title:'💳 Identity Theft', desc:'Fraudulent activity requires legal and financial recovery.', monthly:0, oneTime:-2500},
+  {title:'🎓 Scholarship Awarded', desc:'A family member receives educational assistance.', monthly:0, oneTime:10000},
+  {title:'💼 Promotion', desc:'Your income increases because of a promotion.', monthly:1000, oneTime:0},
+  {title:'🎁 Inheritance', desc:'A relative leaves you money.', monthly:0, oneTime:50000}
+];
+
+let currentPerson = null;
+let currentRemaining = 0;
+let currentEvent = {monthly:0,oneTime:0};
+
+function money(n){
+  return (n<0?'-':'') + '$' + Math.abs(Math.round(n)).toLocaleString();
+}
+
+function buildRows(){
+  const tbody = document.getElementById('budgetRows');
+  tbody.innerHTML = categories.map(cat => `<tr>
+    <td>${cat[1]}</td>
+    <td><span id="given_${cat[0]}" class="provided-cost">Wait for assignment</span><div class="entry-note">Type this amount in the box.</div></td>
+    <td><input type="number" id="${cat[0]}" placeholder="0" oninput="calculateBudget()"></td>
+    <td>${cat[2]}</td>
+  </tr>`).join('');
+}
+
+function showProvidedCosts(){
+  if(!currentPerson) return;
+  categories.forEach((cat,i)=>{
+    document.getElementById('given_'+cat[0]).textContent = money(currentPerson.costs[i]);
+  });
+}
+
+function assignPerson(){
+  currentPerson = people[Math.floor(Math.random()*people.length)];
+  document.getElementById('yearlyIncome').value = currentPerson.income;
+  document.getElementById('monthlyIncome').value = Math.round(currentPerson.income/12);
+  categories.forEach(cat=>document.getElementById(cat[0]).value='');
+  showProvidedCosts();
+  document.getElementById('assignment').innerHTML = `
+    <h3>${currentPerson.icon} Meet ${currentPerson.name}: ${currentPerson.level}</h3>
+    <p><span class="pill">Occupation: ${currentPerson.job}</span> <span class="pill">Household: ${currentPerson.family}</span></p>
+    <p><span class="pill">Estimated yearly gross income: ${money(currentPerson.income)}</span></p>
+    <p class="big-money">Estimated monthly gross income before deductions: ${money(currentPerson.income/12)}</p>
+    <p>${currentPerson.note}</p>
+    <p><strong>Your task:</strong> Type each monthly cost shown in the table into the matching box. Then click Calculate Reality.</p>
+  `;
+  currentEvent = {monthly:0,oneTime:0};
+  document.getElementById('emergency').innerHTML = '<p>Click the button to see what happens next.</p>';
+  calculateBudget();
+}
+
+function checkEntries(){
+  if(!currentPerson){ assignPerson(); return; }
+  let correct = 0;
+  categories.forEach((cat,i)=>{
+    const entered = parseFloat(document.getElementById(cat[0]).value)||0;
+    const target = currentPerson.costs[i];
+    if(Math.round(entered) === Math.round(target)) correct++;
+  });
+  const msg = correct === categories.length
+    ? 'All entries match the assigned monthly costs. Great — now review the results and generate a life-changing event.'
+    : `${correct} out of ${categories.length} entries match. Check the monthly costs shown in the second column and try again.`;
+  document.getElementById('realityMessage').textContent = msg;
+}
+
+function calculateBudget(){
+  const yearly = parseFloat(document.getElementById('yearlyIncome').value) || 0;
+  const monthlyBox = document.getElementById('monthlyIncome');
+  let monthly = parseFloat(monthlyBox.value) || 0;
+  if(yearly && (!monthly || document.activeElement.id === 'yearlyIncome')){
+    monthly = yearly/12;
+    monthlyBox.value = Math.round(monthly);
+  }
+  const costs = categories.reduce((sum,cat)=> sum + (parseFloat(document.getElementById(cat[0]).value)||0),0);
+  const remaining = monthly - costs;
+  currentRemaining = remaining;
+  document.getElementById('rGross').textContent = money(monthly);
+  document.getElementById('rCosts').textContent = money(costs);
+  document.getElementById('rRemaining').textContent = money(remaining);
+  document.getElementById('rYearlyRemaining').textContent = money(remaining*12);
+  let msg = '';
+  if(remaining < 0){ msg = 'Reality Check: This household is spending more than it brings in each month. Debt, skipped needs, second jobs, or family assistance may become part of the story.'; }
+  else if(remaining < 500){ msg = 'Reality Check: This household has very little cushion. One emergency could change everything.'; }
+  else if(remaining < 2000){ msg = 'Reality Check: This household may feel stable, but a major emergency could still create financial stress.'; }
+  else { msg = 'Reality Check: This household has more monthly cushion, but debt, lifestyle inflation, or major emergencies can still matter.'; }
+  document.getElementById('realityMessage').textContent = msg;
+  updateAdjusted();
+}
+
+function generateEmergency(){
+  currentEvent = emergencies[Math.floor(Math.random()*emergencies.length)];
+  document.getElementById('emergency').innerHTML = `
+    <h3>${currentEvent.title}</h3>
+    <p>${currentEvent.desc}</p>
+    <p><span class="pill">Monthly impact: ${money(currentEvent.monthly)}</span> <span class="pill">One-time impact: ${money(currentEvent.oneTime)}</span></p>
+  `;
+  updateAdjusted();
+}
+
+function updateAdjusted(){
+  const adjustedMonthly = currentRemaining + (currentEvent.monthly || 0);
+  const adjustedYearly = adjustedMonthly*12 + (currentEvent.oneTime || 0);
+  document.getElementById('eventMonthly').textContent = money(currentEvent.monthly || 0);
+  document.getElementById('eventOneTime').textContent = money(currentEvent.oneTime || 0);
+  document.getElementById('adjustedMonthly').textContent = money(adjustedMonthly);
+  document.getElementById('adjustedYearly').textContent = money(adjustedYearly);
+}
+
+function resetGame(){
+  currentPerson = null;
+  currentEvent = {monthly:0,oneTime:0};
+  document.getElementById('assignment').innerHTML = '<p>Click the button to begin.</p>';
+  document.getElementById('emergency').innerHTML = '<p>Click the button to see what happens next.</p>';
+  document.getElementById('yearlyIncome').value = '';
+  document.getElementById('monthlyIncome').value = '';
+  categories.forEach(cat=>{document.getElementById(cat[0]).value=''; document.getElementById('given_'+cat[0]).textContent='Wait for assignment';});
+  calculateBudget();
+}
+
+buildRows();
+calculateBudget();
+</script>
+</body>
+</html>
